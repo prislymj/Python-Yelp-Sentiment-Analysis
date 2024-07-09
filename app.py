@@ -4,6 +4,9 @@ import numpy as np
 import nltk
 from nltk.corpus import stopwords
 from bs4 import BeautifulSoup
+import textblob
+from textblob import Word
+
 
 nltk.download('stopwords')
 
@@ -34,4 +37,7 @@ other_stop_words = ['get','told','came','went','one','us','also','even','got','s
 df['cleanreview']=df['stopwords'] = df['stopwords'].apply(lambda x: " ".join(word for word in x.split() if word not in other_stop_words))
 pd.Series(" ".join(df['cleanreview']).split()).value_counts()[:30]
 
-                    
+#lemmatization
+df['lemmatized']=df['cleanreview'].apply(lambda x: " ".join(Word(word).lemmatize() for word in x.split()))           
+
+#sentinebnt analysis
