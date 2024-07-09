@@ -12,7 +12,7 @@ soup = BeautifulSoup(r.text, 'html.parser')
 
 review_spans = soup.select('p.comment__09f24__D0cxf span.raw__09f24__T4Ezm')
 reviews = [span.get_text() for span in review_spans]
-
+#analysing data
 df = pd.DataFrame(reviews, columns=['review'])
 
 df['word_count'] = df['review'].apply(lambda x: len(x.split()))
@@ -23,4 +23,15 @@ stop_words = set(stopwords.words('english'))
 df['stopword_count'] = df['review'].apply(lambda x: len([word for word in x.split() if word.lower() in stop_words]))
 df['stopword_rate'] = df['stopword_count'] / df['word_count']
 
-print(df.head(5))
+#cleaning data
+df['lowercase']=df['review'].apply(lambda x: " ".join(word.lower() for word in x.split()))
+df['punctuation']=df['lowercase'].str.replace('[^\w\s]','')
+df['stopwords']=df['punctuation'].apply(lambda x: " ".join(word for word in x.split() if word not in stop_words))
+
+pd.Series(" ".join(df['stopwords']).split()).value_counts()[:30]
+other_stop_words = ['get','told','came','went','one','us','also','even','got','said','asked','back','order','ordered','went','like','would','could','eat','go','make','take','know','want','see','need','come','try','give','look']
+
+df['cleanreview']=df['stopwords'] = df['stopwords'].apply(lambda x: " ".join(word for word in x.split() if word not in other_stop_words))
+pd.Series(" ".join(df['cleanreview']).split()).value_counts()[:30]
+
+                    
