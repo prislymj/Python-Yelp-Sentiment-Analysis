@@ -6,7 +6,7 @@ from nltk.corpus import stopwords
 from bs4 import BeautifulSoup
 import textblob
 from textblob import Word
-
+from textblob import TextBlob
 
 nltk.download('stopwords')
 
@@ -40,4 +40,11 @@ pd.Series(" ".join(df['cleanreview']).split()).value_counts()[:30]
 #lemmatization
 df['lemmatized']=df['cleanreview'].apply(lambda x: " ".join(Word(word).lemmatize() for word in x.split()))           
 
-#sentinebnt analysis
+#sentiment analysis
+df['polarity'] = df['lemmatized'].apply(lambda x: TextBlob(x).sentiment[0])
+df['subjectivity'] = df['lemmatized'].apply(lambda x: TextBlob(x).sentiment[1])
+
+df.drop(['lowercase', 'punctuation', 'stopwords', 'cleanreview'], axis=1, inplace=True)
+
+
+print(df.head(5))
