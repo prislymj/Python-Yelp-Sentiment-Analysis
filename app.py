@@ -46,5 +46,18 @@ df['subjectivity'] = df['lemmatized'].apply(lambda x: TextBlob(x).sentiment[1])
 
 df.drop(['lowercase', 'punctuation', 'stopwords', 'cleanreview'], axis=1, inplace=True)
 
+# Classify reviews
+def classify_polarity(polarity):
+    if polarity > 0:
+        return 'Positive'
+    elif polarity < 0:
+        return 'Negative'
+    else:
+        return 'Neutral'
 
-print(df.head(5))
+df['sentiment'] = df['polarity'].apply(classify_polarity)
+
+print("\nSentiment Classification:")
+print(df['sentiment'].value_counts())
+
+print(df.head())
